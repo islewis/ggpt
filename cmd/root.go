@@ -6,8 +6,6 @@ package cmd
 
 import (
 	"os"
-	"fmt"
-	"log"
 	"github.com/spf13/cobra"
 )
 
@@ -42,29 +40,4 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	cobra.OnInitialize(initConfig)
-}
-
-func initConfig() {
-	// make .ggpt dir
-	fmt.Print("inside init config")
-	home, _ := os.UserHomeDir()
-        dirPath := home + "/.ggpt"
-        _, err := os.Stat(dirPath)
-        if err == nil { return }
-	if os.IsNotExist(err) {
-		_ = os.MkdirAll(dirPath, os.ModePerm)
-		fmt.Print("making dir")
-        if err != nil {log.Fatal(err)}
-	}
-	// make .ggpt history dir
-        histPath := dirPath + "/history"
-        _, err = os.Stat(histPath)
-        if err == nil { return }
-	if os.IsNotExist(err) {
-		n := os.MkdirAll(histPath, os.ModePerm)
-		fmt.Print("making history")
-		fmt.Print(n)
-		if err != nil {log.Fatal(err)}
-	}
 }

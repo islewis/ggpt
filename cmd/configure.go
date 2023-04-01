@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // configureCmd represents the configure command
@@ -24,8 +25,24 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		home, _ := os.UserHomeDir()
-		credPath := home + "/.ggpt/credentials"
+		dirPath := home+"/.ggpt"
+		credPath := dirPath + "/credentials"
 		_, err := os.Stat(credPath)
+		// if credential file isnt set
+		if os.IsNotExist(err) {
+			// create credential file
+			f, err := os.Create(credPath)
+		        if err != nil {log.Fatal(err)}
+			// take prompt for key
+			var newKey string
+			fmt.Print("OpenAI API Key: ")
+			fmt.Scanln(&newKey)
+			// write key to credential file
+			fileContents := "openai_key=" + newKey
+			_, err = f.WriteString(fileContents)
+			if err != nil {log.Fatal(err)}
+			fmt.Println("Key set")
+		}
 		if err == nil {
 			// Read in current API key
 			fileContents, err := os.ReadFile(credPath)
@@ -36,6 +53,7 @@ to quickly create a Cobra application.`,
 			censoredKey := "**************" + key[len(key)-5:]
 			// Prompt for new key
 			var newKey string
+			fmt.Print("If new key is entered, previous key will be overwritten.\n")
 			fmt.Printf("OpenAI API Key [%s]: ", censoredKey)
 			fmt.Scanln(&newKey)
 			// Overwrite existing file
@@ -48,26 +66,12 @@ to quickly create a Cobra application.`,
 
 
 		}
-		if os.IsNotExist(err) {
-			// create credential file
-			f, err := os.Create(credPath)
-		        if err != nil {log.Fatal(err)}
-			// take prompt for key
-			var newKey string
-			fmt.Print("OpenAI API Key: ")
-			fmt.Scanln(&newKey)
-			// write key to credential file
-			fileContents := "openai_key=" + newKey
-			_, err = f.WriteString(fileContents)
-			//fmt.Fprintf(credPath, key)
-			if err != nil {log.Fatal(err)}
-			fmt.Println("Key set")
-		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(configureCmd)
+	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
 
@@ -79,3 +83,27 @@ func init() {
 	// is called directly, e.g.:
 	// configureCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
+
+func initConfig() {
+	// set config info
+	viper.SetConfigName("config") // name of config file (without extension)
+	viper.SetConfigType("yaml") // REQUIRED if the config file does not have the extension in the name
+	home, _ := os.UserHomeDir()
+	dirPath := home+"/.ggpt"
+	histPath := dirPath+"/history"
+	viper.AddConfigPath(dirPath)
+	err := viper.ReadInConfig()
+	if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+		// make sure dirs are created
+		_= os.MkdirAll(histPath, os.ModePerm)
+		// todo handle error
+		// write file with any defaults
+		viper.SetDefault("model_name", "GPT3Dot5Turbo")
+		viper.SafeWriteConfig()
+		fmt.Print("ggpt config files initialized at ~/.ggpt \n")
+	} else {
+		return
+		// Config file was found but another error was produced
+	}
+}
+

@@ -1,4 +1,4 @@
-module ggpt
+module github.com/islewis/ggpt
 
 go 1.20
 

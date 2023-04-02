@@ -35,6 +35,7 @@ Command substition allows for full integration into CLI workflows.
 	'ggpt prompt "Briefly summarize the content of the following csv: $(cat apartments.csv)"'
 `,
 	Run: func(cmd *cobra.Command, args []string) {
+		// read in debug arg, if exists
 		home, _ := os.UserHomeDir()
                 credPath := home + "/.ggpt/credentials"
                 _, err := os.Stat(credPath)
@@ -64,6 +65,10 @@ Command substition allows for full integration into CLI workflows.
 				},
 			)
 			if err == nil{
+				if Verbose == true {
+					fmt.Println("API request:\n")
+					fmt.Println(resp)
+				}
 				// Print output
 				output := resp.Choices[0].Message.Content
 				fmt.Print(output+"\n")
@@ -77,11 +82,14 @@ Command substition allows for full integration into CLI workflows.
 				file, _ := json.MarshalIndent(data, "", " ")
 				recordPath := home+"/.ggpt/history/"+strconv.FormatInt(time.Now().Unix(),10)+".json"
 				err = ioutil.WriteFile(recordPath, file, 0644)
-				if err != nil {log.Fatal(err)}
+			if err != nil {log.Fatal(err)}
 			}
+		if err != nil {log.Fatal(err)}
                 }
 	},
 }
+
+var Verbose bool
 
 func init() {
 	rootCmd.AddCommand(promptCmd)
@@ -91,6 +99,7 @@ func init() {
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// promptCmd.PersistentFlags().String("foo", "", "A help for foo")
+	promptCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:

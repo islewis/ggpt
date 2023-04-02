@@ -38,19 +38,29 @@ Command substition allows for full integration into CLI workflows.
 		// read in debug arg, if exists
 		home, _ := os.UserHomeDir()
                 credPath := home + "/.ggpt/credentials"
-                _, err := os.Stat(credPath)
 		// Check credential file exists. Could do some more validation to check its a legit key here
+		if Verbose == true {
+			fmt.Println("Looking for API credentials at " + credPath)
+		}
+                _, err := os.Stat(credPath)
 		if os.IsNotExist(err) {
 			fmt.Print("OpenAI API key not found. Configure key by running 'ggpt configure'\n")
 		}
 		// Run 
                 if err == nil {
                         // Read in API key
+			if Verbose == true {
+				fmt.Println("Credential file found at " + credPath)
+			}
                         fileContents, err := os.ReadFile(credPath)
                         if err != nil {log.Fatal(err)}
                         fileSplit := strings.Split(string(fileContents), "=")
                         key :=  fileSplit[1]
 			// Get completion
+			if Verbose == true {
+				fmt.Println("\nMaking GPT query")
+				fmt.Printf("PROMPT: '%s'\n\n", args[0])
+			}
 			client := openai.NewClient(key)
 			resp, err := client.CreateChatCompletion(
 				context.Background(),
@@ -66,12 +76,12 @@ Command substition allows for full integration into CLI workflows.
 			)
 			if err == nil{
 				if Verbose == true {
-					fmt.Println("API request:\n")
-					fmt.Println(resp)
+					fmt.Println("Query returned successfully")
 				}
 				// Print output
 				output := resp.Choices[0].Message.Content
-				fmt.Print(output+"\n")
+				fmt.Println("\nOUTPUT:")
+				fmt.Println(output+"\n")
 				// Log request
 				currentTime := time.Now().Unix()
 				data := common.Record {
@@ -81,7 +91,11 @@ Command substition allows for full integration into CLI workflows.
 				}
 				file, _ := json.MarshalIndent(data, "", " ")
 				recordPath := home+"/.ggpt/history/"+strconv.FormatInt(time.Now().Unix(),10)+".json"
+				if Verbose == true {
+					fmt.Println("Storing query record locally at " + recordPath)
+				}
 				err = ioutil.WriteFile(recordPath, file, 0644)
+				if err != nil {log.Fatal(err)}
 			if err != nil {log.Fatal(err)}
 			}
 		if err != nil {log.Fatal(err)}

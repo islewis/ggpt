@@ -6,31 +6,41 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
 	"context"
+	"encoding/json"
 	"os"
+	"strconv"
+	"time"
 	"strings"
 	"log"
 	"github.com/spf13/cobra"
+	"github.com/islewis/ggpt/common"
 	openai "github.com/sashabaranov/go-openai"
 )
 
 // promptCmd represents the prompt command
 var promptCmd = &cobra.Command{
 	Use:   "prompt",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short: "Call GPT autocomplete with the given string as a prompt",
+	Long: `This command is the meat of ggpt. Pass in a prompt, get an output from GPT.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+For example:
+	'ggpt prompt "Write me a haiku"'
+
+The output of this command can be piped out, allowing for flexible manipulation directly in the terminal.
+	'ggpt prompt "Output a sample csv of 5 apartments, including cost and location" | tee apartments.csv'
+
+Command substition allows for full integration into CLI workflows. 
+	'ggpt prompt "Briefly summarize the content of the following csv: $(cat apartments.csv)"'
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		home, _ := os.UserHomeDir()
                 credPath := home + "/.ggpt/credentials"
                 _, err := os.Stat(credPath)
 		// Check credential file exists. Could do some more validation to check its a legit key here
 		if os.IsNotExist(err) {
-			fmt.Print("OpenAI API key not found. Configure key by running 'ggpt configure'")
+			fmt.Print("OpenAI API key not found. Configure key by running 'ggpt configure'\n")
 		}
 		// Run 
                 if err == nil {
@@ -54,11 +64,21 @@ to quickly create a Cobra application.`,
 				},
 			)
 			if err == nil{
-				// print output
-				output := resp.Choices[0].Message.Content + "\n" 
-				fmt.Print(output)
+				// Print output
+				output := resp.Choices[0].Message.Content
+				fmt.Print(output+"\n")
+				// Log request
+				currentTime := time.Now().Unix()
+				data := common.Record {
+					Time : currentTime,
+					Prompt : args[0],
+					Output : output,
+				}
+				file, _ := json.MarshalIndent(data, "", " ")
+				recordPath := home+"/.ggpt/history/"+strconv.FormatInt(time.Now().Unix(),10)+".csv"
+				err = ioutil.WriteFile(recordPath, file, 0644)
+				if err != nil {log.Fatal(err)}
 			}
-			if err != nil {log.Fatal(err)}
                 }
 	},
 }

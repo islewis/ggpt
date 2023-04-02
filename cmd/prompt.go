@@ -75,7 +75,7 @@ Command substition allows for full integration into CLI workflows.
 					Output : output,
 				}
 				file, _ := json.MarshalIndent(data, "", " ")
-				recordPath := home+"/.ggpt/history/"+strconv.FormatInt(time.Now().Unix(),10)+".csv"
+				recordPath := home+"/.ggpt/history/"+strconv.FormatInt(time.Now().Unix(),10)+".json"
 				err = ioutil.WriteFile(recordPath, file, 0644)
 				if err != nil {log.Fatal(err)}
 			}

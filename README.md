@@ -1,5 +1,5 @@
 # ggpt
-<img src="https://github.com/islewis/raw/master/ggpt/logo/logo.png" width="100">
+<img src="https://github.com/islewis/ggpt/raw/main/logo/logo.png" width="100">
 ggpt is a simple tool for accessing GPT on the command line, written in Go.
 
 ## Installation

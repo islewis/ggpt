@@ -28,7 +28,7 @@ to quickly create a Cobra application.`,
 		dirPath := home+"/.ggpt"
 		credPath := dirPath + "/credentials"
 		_, err := os.Stat(credPath)
-		// if credential file isnt set
+		// if credential file isnt set, set it
 		if os.IsNotExist(err) {
 			// create credential file
 			f, err := os.Create(credPath)
@@ -56,15 +56,17 @@ to quickly create a Cobra application.`,
 			fmt.Print("If new key is entered, previous key will be overwritten.\n")
 			fmt.Printf("OpenAI API Key [%s]: ", censoredKey)
 			fmt.Scanln(&newKey)
-			// Overwrite existing file
-			f, err := os.Create(credPath)
-		        if err != nil {log.Fatal(err)}
-			newFileContents := "openai_key=" + newKey
-			_, err = f.WriteString(newFileContents)
-			if err != nil {log.Fatal(err)}
-			fmt.Println("Key replaced")
-
-
+			// Do some very validation on new key
+			if len(newKey) == 51 {
+				f, err := os.Create(credPath)
+				if err != nil {log.Fatal(err)}
+				newFileContents := "openai_key=" + newKey
+				_, err = f.WriteString(newFileContents)
+				if err != nil {log.Fatal(err)}
+				fmt.Println("Key replaced")
+			} else {
+				fmt.Println("Input doesnt look like an OpenAI API key, try again")
+			}
 		}
 	},
 }

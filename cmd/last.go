@@ -22,8 +22,8 @@ import (
 var lastCmd = &cobra.Command{
 	Use:   "last",
 	Short: "Returns the output of the previous query.",
-	Long: `Last repeats the output of the previous query.
-In comparison to querying with the same prompt,
+	Long: `Last repeats the output of the previous GPT query.
+In comparison to querying again with the same prompt,
 last guarentees the previous output, and prevents
 unnecessary usage of OpenAI's API. This saves time
 and money when a simple reuse is desired.
@@ -35,13 +35,13 @@ and money when a simple reuse is desired.
 		// Get list of files, via timestamped name
 		var records []int64
 		filepath.WalkDir(histDir, func(s string, d fs.DirEntry, err error) error {
-			if err != nil { return err }
+			if err != nil {log.Fatal(err)}
 			if filepath.Ext(d.Name()) == ".json" {
 				file := strings.Split(s, "/")
 				timestamp := strings.Split(file[len(file)-1], ".")
 				// take first slice, conv to int64
 				timestampI64, err := strconv.ParseInt(timestamp[0], 10, 64)
-				if err != nil { return err }
+				if err != nil {log.Fatal(err)}
 				records = append(records, timestampI64)
 			}
 			return nil

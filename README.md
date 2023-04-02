@@ -1,5 +1,5 @@
 # ggpt
-
+<img src="https://github.com/islewis/ggpt/logo/logo.png" width="100">
 ggpt is a simple tool for accessing GPT on the command line, written in Go.
 
 ## Installation
@@ -11,7 +11,7 @@ go version go1.20.0 linux/amd64
 ```
 Next, install ggpt using `go install`:
 ```
-go install github.com/islewis/ggpt@latest
+$ go install github.com/islewis/ggpt@latest
 ```
 Thats it! To confirm ggpt is downloaded, run `ggpt --help`:
 ```

@@ -84,7 +84,7 @@ Command substition allows for full integration into CLI workflows.
 					fmt.Println("Query returned successfully")
 				fmt.Println("\nOUTPUT:\n")
 				}
-				fmt.Println(output+"\n")
+				fmt.Println(output)
 				// Log request
 				currentTime := time.Now().Unix()
 				data := common.Record {

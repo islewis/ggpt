@@ -80,7 +80,10 @@ Command substition allows for full integration into CLI workflows.
 				}
 				// Print output
 				output := resp.Choices[0].Message.Content
-				fmt.Println("\nOUTPUT:")
+				if Verbose == true {
+					fmt.Println("Query returned successfully")
+				fmt.Println("\nOUTPUT:\n")
+				}
 				fmt.Println(output+"\n")
 				// Log request
 				currentTime := time.Now().Unix()

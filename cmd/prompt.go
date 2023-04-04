@@ -110,6 +110,7 @@ var Verbose bool
 
 func init() {
 	rootCmd.AddCommand(promptCmd)
+	cobra.OnInitialize(checkHistoryDir)
 
 	// Here you will define your flags and configuration settings.
 
@@ -121,4 +122,19 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// promptCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func checkHistoryDir() {
+	home, _ := os.UserHomeDir()
+	dirPath := home+"/.ggpt"
+	histPath := dirPath+"/history"
+	_, err := os.Stat(histPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			_= os.MkdirAll(histPath, os.ModePerm)
+		} else {
+			fmt.Println("Unable to check if history dir exists at" + dirPath)
+			log.Fatal(err)
+		}
+	}
 }

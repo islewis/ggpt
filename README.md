@@ -2,23 +2,27 @@
 <img src="https://github.com/islewis/ggpt/raw/main/logo/logo1.png" width="200">
 ggpt is a simple tool for accessing GPT on the command line, written in Go.
 
+
+* [Usage](#usage-examples)
+* [Installation](#installation)
+
 # Usage Examples
 
-GPT is great for creating sample data. This works particularly well when combined with a traditional CLI workflow.  
+Lets create some sample data, something GPT is great at. `ggpt prompt` will take our input and return GPT's output.
 ```
-$ ggpt prompt "Output a sample csv file of new cars for sale. Include car model, cost, and mpg. Include no commas in the data. Give no explaination"
+$ ggpt prompt "Output a sample csv file of new cars for sale. Include car model, cost, and mpg."
 model,cost,mpg
 Toyota Camry,25000,32
 Honda Civic,22000,36
 Ford Fusion,26000,28
 ```
-If the output is suffient, `ggpt last` will return it again.
-```
+If the output is suffient, `ggpt last` will return it- no need to query GPT again. Lets save it to `for_sale.csv`.
+```bash
 $ ggpt last > for_sale.csv
 ```
-Taking advantage of command substitution, GPT can easily parse over this new data.
+Taking advantage of command substitution, GPT can easily parse over this new data. Lets get GPT to write us some python to analyze our data.
 ```
-$ ggpt prompt "Output an example python file that reads in a file named for_sale.csv with data $(cat for_sale.csv), and prints the cost per mpg for each car model. Give no formatting or explanation."
+$ ggpt prompt "Output an example python file that reads in a file named for_sale.csv with data $(cat for_sale.csv), and prints the cost per mpg for each car model."
 import csv
 
 with open('for_sale.csv', 'r') as file:
@@ -95,12 +99,12 @@ Overall, the regex searches for any string of text that meets the aforementioned
 
 ## Installation
 
-Make sure go is installed using `go version`. If not, [install go](https://go.dev/doc/install).
+1. Make sure golang is installed using `go version`. If not, [install go](https://go.dev/doc/install).
 ```
 $ go version      
 go version go1.20.0 linux/amd64
 ```
-Next, install ggpt using `go install`:
+2. Install ggpt using `go install`:
 ```
 $ go install github.com/islewis/ggpt@latest
 ```
@@ -125,5 +129,11 @@ Flags:
 
 Use "ggpt [command] --help" for more information about a command.
 ```
-## Usage
-todo
+
+## Configure API key
+In order to access GPT, you need an OpenAI account, and an API key. Get one [here](https://platform.openai.com/account/api-keys) if you dont already have one.
+```
+$ ggpt configure
+OpenAI API Key: 
+Key set
+```

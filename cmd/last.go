@@ -35,7 +35,10 @@ and money when a simple reuse is desired.
 		// Get list of files, via timestamped name
 		var records []int64
 		filepath.WalkDir(histDir, func(s string, d fs.DirEntry, err error) error {
-			if err != nil {log.Fatal(err)}
+			if err != nil {
+				fmt.Println("Unable to find any previous queries.")
+				log.Fatal(err)
+			}
 			if filepath.Ext(d.Name()) == ".json" {
 				file := strings.Split(s, "/")
 				timestamp := strings.Split(file[len(file)-1], ".")

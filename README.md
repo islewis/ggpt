@@ -9,7 +9,7 @@ ggpt is a simple tool for accessing GPT on the command line, written in Go.
 # Usage Examples
 
 Lets create some sample data, something GPT is great at. `ggpt prompt` will take our input and return GPT's output.
-```
+```bash
 $ ggpt prompt "Output a sample csv file of new cars for sale. Include car model, cost, and mpg."
 model,cost,mpg
 Toyota Camry,25000,32
@@ -21,7 +21,7 @@ If the output is suffient, `ggpt last` will return it- no need to query GPT agai
 $ ggpt last > for_sale.csv
 ```
 Taking advantage of command substitution, GPT can easily parse over this new data. Lets get GPT to write us some python to analyze our data.
-```
+```bash
 $ ggpt prompt "Output an example python file that reads in a file named for_sale.csv with data $(cat for_sale.csv), and prints the cost per mpg for each car model."
 import csv
 
@@ -40,12 +40,12 @@ Ford Fusion: 928.5714285714286
 -------
 
 Another possible usage of GPT is regex help (we all need it)
-```
+```bash
 $ ggpt prompt "Output a regex that finds all december dates from 2011 to 2019. Use format month/day/year. Include no explanation."
 \b12\/([1-9]|[1-2][0-9]|3[0-1])\/(201[1-9])\b
 ```
 Cool, that's certainly a regex. We know GPT can (and will) make stuff up. Lets save that regex to an enviornment variable, and test it.
-```
+```bash
 $ export REGEX=$(ggpt last)
 $ ggpt prompt "Output a list of 20 dates, one on each line. Use format month/day/year. Include dates from the last ten years." | tee dates.csv
 Assuming the current year is 2021, here is a list of 20 dates in the format month/day/year, including dates from the last ten years:
@@ -75,7 +75,7 @@ $ grep -E "$REGEX" dates.txt
 7. 12/31/2017
 ```
 Passes the eye test, pretty neat. What's it doing though?
-```
+```bash
 ggpt prompt "can you explain what regex $REGEX is doing?"
 The regex \b12\/([1-9]|[1-2][0-9]|3[0-1])\/(201[1-9])\b is looking for a date in the format "dd/mm/yyyy" where the month is specified as "12".
 
@@ -100,16 +100,16 @@ Overall, the regex searches for any string of text that meets the aforementioned
 ## Installation
 
 1. Make sure golang is installed using `go version`. If not, [install go](https://go.dev/doc/install).
-```
+```bash
 $ go version      
 go version go1.20.0 linux/amd64
 ```
 2. Install ggpt using `go install`:
-```
+```bash
 $ go install github.com/islewis/ggpt@latest
 ```
 Thats it! To confirm ggpt is downloaded, run `ggpt --help`:
-```
+```bash
 $ ggpt --help
 ggpt is a CLI tool to interact with OpenAI's GPT language model. ggpt wraps OpenAI's completion feature, via their API, outputting the result directly in the terminal.
 
@@ -132,7 +132,7 @@ Use "ggpt [command] --help" for more information about a command.
 
 ## Configure API key
 In order to access GPT, you need an OpenAI account, and an API key. Get one [here](https://platform.openai.com/account/api-keys) if you dont already have one.
-```
+```bash
 $ ggpt configure
 OpenAI API Key: 
 Key set

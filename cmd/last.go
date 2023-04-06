@@ -1,17 +1,17 @@
 package cmd
 
 import (
-	"fmt"
-	"log"
 	"encoding/json"
-	"strings"
-	"os"
-	"io/ioutil"
-	"strconv"
-	"io/fs"
-	"path/filepath"
-	"github.com/spf13/cobra"
+	"fmt"
 	"github.com/islewis/ggpt/common"
+	"github.com/spf13/cobra"
+	"io/fs"
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
 )
 
 // lastCmd represents the last command
@@ -27,7 +27,7 @@ and money when a simple reuse is desired.
 	Run: func(cmd *cobra.Command, args []string) {
 		// Make sure theres a record to use
 		home, _ := os.UserHomeDir()
-		histDir := home+"/.ggpt/history"
+		histDir := home + "/.ggpt/history"
 		// Get list of files, via timestamped name
 		var records []int64
 		filepath.WalkDir(histDir, func(s string, d fs.DirEntry, err error) error {
@@ -40,7 +40,9 @@ and money when a simple reuse is desired.
 				timestamp := strings.Split(file[len(file)-1], ".")
 				// take first slice, conv to int64
 				timestampI64, err := strconv.ParseInt(timestamp[0], 10, 64)
-				if err != nil {log.Fatal(err)}
+				if err != nil {
+					log.Fatal(err)
+				}
 				records = append(records, timestampI64)
 			}
 			return nil
@@ -54,15 +56,19 @@ and money when a simple reuse is desired.
 		latest := records[0]
 		for _, value := range records {
 			if value > latest {
-			latest = value
+				latest = value
 			}
 		}
 		// return output of latest record
 		latestPath := histDir + "/" + strconv.FormatInt(latest, 10) + ".json"
 		jsonFile, err := os.Open(latestPath)
-		if err != nil {log.Fatal(err)}
+		if err != nil {
+			log.Fatal(err)
+		}
 		byteValue, err := ioutil.ReadAll(jsonFile)
-		if err != nil {log.Fatal(err)}
+		if err != nil {
+			log.Fatal(err)
+		}
 		var record common.Record
 		json.Unmarshal(byteValue, &record)
 		fmt.Println(record.Output)

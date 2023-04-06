@@ -1,17 +1,15 @@
 package cmd
 
 import (
-	"os"
 	"github.com/spf13/cobra"
+	"os"
 )
-
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "ggpt",
 	Short: "CLI utility for GPT completion, written in go",
-	Long: `ggpt is a CLI tool to interact with OpenAI's GPT language model. ggpt wraps OpenAI's completion feature, via their API, outputting the result directly in the terminal. `,
+	Long:  `ggpt is a CLI tool to interact with OpenAI's GPT language model. ggpt wraps OpenAI's completion feature, via their API, outputting the result directly in the terminal. `,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },

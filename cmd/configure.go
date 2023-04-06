@@ -98,11 +98,11 @@ func initConfig() {
 	if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 		// make sure dirs are created
 		_= os.MkdirAll(histPath, os.ModePerm)
-		// todo handle error
 		// write file with any defaults
-		viper.SetDefault("model_name", "GPT3Dot5Turbo")
-		viper.SafeWriteConfig()
-		fmt.Print("ggpt config files initialized at ~/.ggpt \n")
+		// Init config file here when ready to build out
+		//viper.SetDefault("model_name", "GPT3Dot5Turbo")
+		//viper.SafeWriteConfig()
+		//fmt.Print("ggpt config files initialized at ~/.ggpt \n")
 	} else {
 		return
 		// Config file was found but another error was produced

@@ -2,13 +2,14 @@
 <img src="https://github.com/islewis/ggpt/raw/main/logo/logo1.png" width="200">
 ggpt is a simple tool for accessing GPT on the command line, written in Go.
 
+- [ggpt](#ggpt)
+  - [Usage Examples](#usage-examples)
+  - [Installation](#installation)
+  - [Configure API key](#configure-api-key)
 
-* [Usage](#usage-examples)
-* [Installation](#installation)
+## Usage Examples
 
-# Usage Examples
-
-Lets create some sample data, something GPT is great at. `ggpt prompt` will take our input and return GPT's output.
+Let's create some sample data, something GPT is great at. `ggpt prompt` will take our input and return GPT's output.
 ```bash
 $ ggpt prompt "Output a sample csv file of new cars for sale. Include car model, cost, and mpg."
 model,cost,mpg
@@ -16,13 +17,13 @@ Toyota Camry,25000,32
 Honda Civic,22000,36
 Ford Fusion,26000,28
 ```
-If the output is suffient, `ggpt last` will return it- no need to query GPT again. Lets save it to `for_sale.csv`.
+If the output is sufficient, `ggpt last` will return it— no need to query GPT again. Lets save it to `for_sale.csv`.
 ```bash
 $ ggpt last > for_sale.csv
 ```
-Taking advantage of command substitution, GPT can easily parse over this new data. Lets get GPT to write us some python to analyze our data.
+Taking advantage of command substitution, GPT can easily parse over this new data. Let's get GPT to write us some Python to analyze our data.
 ```bash
-$ ggpt prompt "Output an example python file that reads in a file named for_sale.csv with data $(cat for_sale.csv), and prints the cost per mpg for each car model."
+$ ggpt prompt "Output an example Python file that reads in a file named for_sale.csv with data $(cat for_sale.csv), and prints the cost per mpg for each car model."
 import csv
 
 with open('for_sale.csv', 'r') as file:
@@ -39,12 +40,12 @@ Ford Fusion: 928.5714285714286
 ``` 
 -------
 
-Another possible usage of GPT is regex help (we all need it)
+Another possible usage of GPT is regex help (we all need it).
 ```bash
 $ ggpt prompt "Output a regex that finds all december dates from 2011 to 2019. Use format month/day/year. Include no explanation."
 \b12\/([1-9]|[1-2][0-9]|3[0-1])\/(201[1-9])\b
 ```
-Cool, that's certainly a regex. We know GPT can (and will) make stuff up. Lets save that regex to an enviornment variable, and test it.
+Cool, that's certainly a regex. We know GPT can (and will) make stuff up. Lets save that regex to an environment variable, and test it.
 ```bash
 $ export REGEX=$(ggpt last)
 $ ggpt prompt "Output a list of 20 dates, one on each line. Use format month/day/year. Include dates from the last ten years." | tee dates.csv
@@ -108,7 +109,7 @@ go version go1.20.0 linux/amd64
 ```bash
 $ go install github.com/islewis/ggpt@latest
 ```
-Thats it! To confirm ggpt is downloaded, run `ggpt --help`:
+That's it! To confirm ggpt is downloaded, run `ggpt --help`:
 ```bash
 $ ggpt --help
 ggpt is a CLI tool to interact with OpenAI's GPT language model. ggpt wraps OpenAI's completion feature, via their API, outputting the result directly in the terminal.
@@ -131,7 +132,7 @@ Use "ggpt [command] --help" for more information about a command.
 ```
 
 ## Configure API key
-In order to access GPT, you need an OpenAI account, and an API key. Get one [here](https://platform.openai.com/account/api-keys) if you dont already have one.
+In order to access GPT, you need an OpenAI account, and an API key. Get one [here](https://platform.openai.com/account/api-keys) if you don't already have one.
 ```bash
 $ ggpt configure
 OpenAI API Key: 

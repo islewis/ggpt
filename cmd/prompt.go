@@ -21,7 +21,7 @@ import (
 
 // promptCmd represents the prompt command
 var promptCmd = &cobra.Command{
-	Use:   "prompt",
+	Use:   "prompt \"This is my prompt.\"",
 	Short: "Call GPT autocomplete with the given string as a prompt",
 	Long: `This command is the meat of ggpt. Pass in a prompt, get an output from GPT.
 
@@ -35,6 +35,11 @@ Command substition allows for full integration into CLI workflows.
 	'ggpt prompt "Briefly summarize the content of the following csv: $(cat apartments.csv)"'
 `,
 	Run: func(cmd *cobra.Command, args []string) {
+		// make sure theres a prompt
+		if len(args) == 0 {
+			fmt.Println("Prompt not found. See \"ggpt prompt --help\" for more details")
+			os.Exit(0)
+		}
 		// read in debug arg, if exists
 		home, _ := os.UserHomeDir()
                 credPath := home + "/.ggpt/credentials"
@@ -46,16 +51,15 @@ Command substition allows for full integration into CLI workflows.
 		if os.IsNotExist(err) {
 			fmt.Print("OpenAI API key not found. Configure key by running 'ggpt configure'\n")
 		}
-		// Run 
-                if err == nil {
-                        // Read in API key
+		if err == nil {
+			// Read in API key
 			if Verbose == true {
 				fmt.Println("Credential file found at " + credPath)
 			}
-                        fileContents, err := os.ReadFile(credPath)
-                        if err != nil {log.Fatal(err)}
-                        fileSplit := strings.Split(string(fileContents), "=")
-                        key :=  fileSplit[1]
+			fileContents, err := os.ReadFile(credPath)
+			if err != nil {log.Fatal(err)}
+			fileSplit := strings.Split(string(fileContents), "=")
+			key :=  fileSplit[1]
 			// Get completion
 			if Verbose == true {
 				fmt.Println("\nMaking GPT query")
@@ -75,14 +79,11 @@ Command substition allows for full integration into CLI workflows.
 				},
 			)
 			if err == nil{
-				if Verbose == true {
-					fmt.Println("Query returned successfully")
-				}
 				// Print output
 				output := resp.Choices[0].Message.Content
 				if Verbose == true {
 					fmt.Println("Query returned successfully")
-				fmt.Println("\nOUTPUT:\n")
+				fmt.Println("\nOUTPUT:")
 				}
 				fmt.Println(output)
 				// Log request
@@ -95,14 +96,14 @@ Command substition allows for full integration into CLI workflows.
 				file, _ := json.MarshalIndent(data, "", " ")
 				recordPath := home+"/.ggpt/history/"+strconv.FormatInt(time.Now().Unix(),10)+".json"
 				if Verbose == true {
-					fmt.Println("Storing query record locally at " + recordPath)
+					fmt.Println("\nStoring query record locally at " + recordPath)
 				}
 				err = ioutil.WriteFile(recordPath, file, 0644)
 				if err != nil {log.Fatal(err)}
 			if err != nil {log.Fatal(err)}
 			}
 		if err != nil {log.Fatal(err)}
-                }
+		}
 	},
 }
 
@@ -111,9 +112,7 @@ var Verbose bool
 func init() {
 	rootCmd.AddCommand(promptCmd)
 	cobra.OnInitialize(checkHistoryDir)
-
 	// Here you will define your flags and configuration settings.
-
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// promptCmd.PersistentFlags().String("foo", "", "A help for foo")

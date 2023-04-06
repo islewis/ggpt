@@ -49,6 +49,11 @@ and money when a simple reuse is desired.
 			}
 			return nil
 		})
+		// check there is a record to return
+		if len(records) == 0 {
+			fmt.Println("No previous queries found. Make one with \"ggpt prompt\"")
+			os.Exit(0)
+		}
 		// get latest record
 		latest := records[0]
 		for _, value := range records {

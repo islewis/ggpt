@@ -30,9 +30,6 @@ to quickly create a Cobra application.`,
 		_, err := os.Stat(credPath)
 		// if credential file isnt set, set it
 		if os.IsNotExist(err) {
-			// create credential file
-			f, err := os.Create(credPath)
-		        if err != nil {log.Fatal(err)}
 			// take prompt for key
 			var newKey string
 			fmt.Print("OpenAI API Key: ")
@@ -43,6 +40,9 @@ to quickly create a Cobra application.`,
 				fmt.Println("Input not found. Please try again")
 				os.Exit(0)
 			}
+			// create credential file
+			f, err := os.Create(credPath)
+		        if err != nil {log.Fatal(err)}
 			_, err = f.WriteString(fileContents)
 			if err != nil {log.Fatal(err)}
 			fmt.Println("Key set")

@@ -39,6 +39,10 @@ to quickly create a Cobra application.`,
 			fmt.Scanln(&newKey)
 			// write key to credential file
 			fileContents := "openai_key=" + newKey
+			if newKey == "" {
+				fmt.Println("Input not found. Please try again")
+				os.Exit(0)
+			}
 			_, err = f.WriteString(fileContents)
 			if err != nil {log.Fatal(err)}
 			fmt.Println("Key set")

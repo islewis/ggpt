@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"log"
 	"os"
 	"strings"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // configureCmd represents the configure command
@@ -21,7 +21,7 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		home, _ := os.UserHomeDir()
-		dirPath := home+"/.ggpt"
+		dirPath := home + "/.ggpt"
 		credPath := dirPath + "/credentials"
 		_, err := os.Stat(credPath)
 		// if credential file isnt set, set it
@@ -38,17 +38,23 @@ to quickly create a Cobra application.`,
 			}
 			// create credential file
 			f, err := os.Create(credPath)
-		        if err != nil {log.Fatal(err)}
+			if err != nil {
+				log.Fatal(err)
+			}
 			_, err = f.WriteString(fileContents)
-			if err != nil {log.Fatal(err)}
+			if err != nil {
+				log.Fatal(err)
+			}
 			fmt.Println("Key set")
 		}
 		if err == nil {
 			// Read in current API key
 			fileContents, err := os.ReadFile(credPath)
-		        if err != nil {log.Fatal(err)}
+			if err != nil {
+				log.Fatal(err)
+			}
 			fileSplit := strings.Split(string(fileContents), "=")
-			key :=  fileSplit[1]
+			key := fileSplit[1]
 			// Get blurred key to show
 			censoredKey := "**************" + key[len(key)-5:]
 			// Prompt for new key
@@ -59,10 +65,14 @@ to quickly create a Cobra application.`,
 			// Do some very validation on new key
 			if len(newKey) == 51 {
 				f, err := os.Create(credPath)
-				if err != nil {log.Fatal(err)}
+				if err != nil {
+					log.Fatal(err)
+				}
 				newFileContents := "openai_key=" + newKey
 				_, err = f.WriteString(newFileContents)
-				if err != nil {log.Fatal(err)}
+				if err != nil {
+					log.Fatal(err)
+				}
 				fmt.Println("Key replaced")
 			} else {
 				fmt.Println("Input doesnt look like an OpenAI API key, try again")
@@ -89,15 +99,15 @@ func init() {
 func initConfig() {
 	// set config info
 	viper.SetConfigName("config") // name of config file (without extension)
-	viper.SetConfigType("yaml") // REQUIRED if the config file does not have the extension in the name
+	viper.SetConfigType("yaml")   // REQUIRED if the config file does not have the extension in the name
 	home, _ := os.UserHomeDir()
-	dirPath := home+"/.ggpt"
-	histPath := dirPath+"/history"
+	dirPath := home + "/.ggpt"
+	histPath := dirPath + "/history"
 	viper.AddConfigPath(dirPath)
 	err := viper.ReadInConfig()
 	if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 		// make sure dirs are created
-		_= os.MkdirAll(histPath, os.ModePerm)
+		_ = os.MkdirAll(histPath, os.ModePerm)
 		// write file with any defaults
 		// Init config file here when ready to build out
 		//viper.SetDefault("model_name", "GPT3Dot5Turbo")
@@ -108,4 +118,3 @@ func initConfig() {
 		// Config file was found but another error was produced
 	}
 }
-

@@ -1,18 +1,18 @@
 package cmd
 
 import (
-	"fmt"
-	"io/ioutil"
 	"context"
 	"encoding/json"
-	"os"
-	"strconv"
-	"time"
-	"strings"
-	"log"
-	"github.com/spf13/cobra"
+	"fmt"
 	"github.com/islewis/ggpt/common"
 	openai "github.com/sashabaranov/go-openai"
+	"github.com/spf13/cobra"
+	"io/ioutil"
+	"log"
+	"os"
+	"strconv"
+	"strings"
+	"time"
 )
 
 // promptCmd represents the prompt command
@@ -38,12 +38,12 @@ Command substition allows for full integration into CLI workflows.
 		}
 		// read in debug arg, if exists
 		home, _ := os.UserHomeDir()
-                credPath := home + "/.ggpt/credentials"
+		credPath := home + "/.ggpt/credentials"
 		// Check credential file exists. Could do some more validation to check its a legit key here
 		if Verbose == true {
 			fmt.Println("Looking for API credentials at " + credPath)
 		}
-                _, err := os.Stat(credPath)
+		_, err := os.Stat(credPath)
 		if os.IsNotExist(err) {
 			fmt.Print("OpenAI API key not found. Configure key by running 'ggpt configure'\n")
 		}
@@ -53,9 +53,11 @@ Command substition allows for full integration into CLI workflows.
 				fmt.Println("Credential file found at " + credPath)
 			}
 			fileContents, err := os.ReadFile(credPath)
-			if err != nil {log.Fatal(err)}
+			if err != nil {
+				log.Fatal(err)
+			}
 			fileSplit := strings.Split(string(fileContents), "=")
-			key :=  fileSplit[1]
+			key := fileSplit[1]
 			// Get completion
 			if Verbose == true {
 				fmt.Println("\nMaking GPT query")
@@ -74,31 +76,37 @@ Command substition allows for full integration into CLI workflows.
 					},
 				},
 			)
-			if err == nil{
+			if err == nil {
 				// Print output
 				output := resp.Choices[0].Message.Content
 				if Verbose == true {
 					fmt.Println("Query returned successfully")
-				fmt.Println("\nOUTPUT:")
+					fmt.Println("\nOUTPUT:")
 				}
 				fmt.Println(output)
 				// Log request
 				currentTime := time.Now().Unix()
-				data := common.Record {
-					Time : currentTime,
-					Prompt : args[0],
-					Output : output,
+				data := common.Record{
+					Time:   currentTime,
+					Prompt: args[0],
+					Output: output,
 				}
 				file, _ := json.MarshalIndent(data, "", " ")
-				recordPath := home+"/.ggpt/history/"+strconv.FormatInt(time.Now().Unix(),10)+".json"
+				recordPath := home + "/.ggpt/history/" + strconv.FormatInt(time.Now().Unix(), 10) + ".json"
 				if Verbose == true {
 					fmt.Println("\nStoring query record locally at " + recordPath)
 				}
 				err = ioutil.WriteFile(recordPath, file, 0644)
-				if err != nil {log.Fatal(err)}
-			if err != nil {log.Fatal(err)}
+				if err != nil {
+					log.Fatal(err)
+				}
+				if err != nil {
+					log.Fatal(err)
+				}
 			}
-		if err != nil {log.Fatal(err)}
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 	},
 }
@@ -121,12 +129,12 @@ func init() {
 
 func checkHistoryDir() {
 	home, _ := os.UserHomeDir()
-	dirPath := home+"/.ggpt"
-	histPath := dirPath+"/history"
+	dirPath := home + "/.ggpt"
+	histPath := dirPath + "/history"
 	_, err := os.Stat(histPath)
 	if err != nil {
 		if os.IsNotExist(err) {
-			_= os.MkdirAll(histPath, os.ModePerm)
+			_ = os.MkdirAll(histPath, os.ModePerm)
 		} else {
 			fmt.Println("Unable to check if history dir exists at" + dirPath)
 			log.Fatal(err)
